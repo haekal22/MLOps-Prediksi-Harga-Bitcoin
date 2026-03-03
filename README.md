@@ -1,4 +1,3 @@
-# MLOps-Prediksi-Harga-Bitcoin
 # Sistem Prediksi Harga Bitcoin Berbasis MLOps
 
 ## Tujuan Proyek
