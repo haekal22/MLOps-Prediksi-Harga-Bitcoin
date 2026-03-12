@@ -11,5 +11,5 @@ response = requests.get(url, params=params)
 
 data = response.json()
 
-print("Sample price data:")
+print("sample price data:")
 print(data["prices"][:5])
