@@ -21,12 +21,7 @@ df = df.drop_duplicates()
 
 df = df.dropna()
 
-df["price_change"] = df["price_usd"].diff()
-df["volume_change"] = df["volume_usd"].diff()
-
-df["target_price_next_day"] = df["price_usd"].shift(-1)
-
-df = df.dropna()
+df = df.reset_index(drop=True)
 
 os.makedirs("data/processed", exist_ok=True)
 
