@@ -60,3 +60,60 @@ Project ini menggunakan GitHub Flow:
 - Lakukan commit di branch fitur
 - Buat Pull Request
 - Merge ke `main` setelah divalidasi
+
+---
+
+## Data Ingestion
+
+Proses pengambilan data dilakukan menggunakan API dari CoinGecko melalui script:
+
+```
+python src/ingest_data.py
+```
+
+Fitur:
+- Mengambil data Bitcoin:
+- Harga (price)
+- Market Cap
+- Volume
+- Data dikonversi ke waktu WIB
+- Data disimpan dalam format CSV
+- Menggunakan timestamp pada nama file untuk menghindari overwrite
+- Mendukung pengambilan data secara berkala (simulasi continual learning)
+Output:
+Lokasi: data/raw/
+Contoh file:
+btc_market_20260404_120000.csv
+
+---
+
+## Data Preprocessing
+
+Proses preprocessing dilakukan menggunakan script:
+
+```
+python src/preprocess.py
+```
+
+Proses yang dilakukan:
+- Membaca file terbaru dari folder data/raw/
+- Konversi kolom datetime ke format yang sesuai
+- Mengurutkan data berdasarkan waktu
+- Menghapus data duplikat
+- Menghapus missing values
+- Reset index
+Output:
+Lokasi: data/processed/
+File hasil:
+btc_clean.csv
+
+---
+
+## Cara Menjalankan Pipeline
+
+Jalankan secara berurutan:
+
+```
+python src/ingest_data.py 
+python src/preprocess.py
+```
