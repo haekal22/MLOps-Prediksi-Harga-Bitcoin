@@ -117,3 +117,87 @@ Jalankan secara berurutan:
 python src/ingest_data.py 
 python src/preprocess.py
 ```
+
+## Data Versioning dengan DVC
+
+Proyek ini menggunakan DVC (Data Version Control) untuk melakukan versioning dataset tanpa menyimpan file besar ke Git.
+
+### Inisialisasi DVC
+```
+dvc init
+```
+
+### Tracking dataset
+Dataset hasil preprocessing dilacak menggunakan:
+
+```
+dvc add data/processed/btc_features.csv
+```
+
+
+Hasil:
+- File `.dvc` dibuat
+- Git hanya menyimpan metadata dataset
+
+---
+
+## Simulasi Continual Learning
+
+Dataset diperbarui melalui proses ingestion:
+
+```
+python src/ingest_data.py
+python src/preprocess.py
+```
+
+Setelah data berubah, dataset dilacak kembali:
+
+```
+dvc add data/processed/btc_features.csv
+```
+
+
+---
+
+## Melihat Perubahan Dataset
+
+Cek status dataset:
+```
+dvc status
+```
+
+Cek perbedaan versi:
+```
+dvc diff
+```
+
+---
+
+## Versioning dengan Git + DVC
+
+Setiap perubahan dataset dicatat dengan Git:
+```
+git add data/processed/btc_features.csv.dvc
+git commit -m "update dataset version"
+```
+
+---
+
+## Tujuan Penggunaan DVC
+
+- Menghindari penyimpanan dataset besar di Git
+- Melakukan versioning dataset (v1, v2, dst)
+- Mendukung continuous learning
+- Memudahkan tracking perubahan data ML
+
+---
+
+## Alur Versioning DVC
+
+Dataset awal → dvc add → commit (v1)  
+↓  
+Data baru masuk  
+↓  
+dvc add lagi → commit (v2)  
+↓  
+dvc diff untuk melihat perubahan
