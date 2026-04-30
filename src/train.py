@@ -5,6 +5,7 @@ import mlflow.xgboost
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from xgboost import XGBRegressor
+from itertools import product
 import numpy as np
 
 # ========================
@@ -26,46 +27,54 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # ========================
-# EXPERIMENT PARAMETER
+# PARAMETER GRID
 # ========================
-n_estimators = 100
-max_depth = 5
-learning_rate = 0.1
+n_estimators_list = [100, 300, 500]
+max_depth_list = [3, 5, 7]
+learning_rate_list = [0.01, 0.05, 0.1]
 
 # ========================
-# MLFLOW START
+# MLFLOW
 # ========================
 mlflow.set_experiment("BTC Prediction")
 
-with mlflow.start_run():
+# LOOP SEMUA KOMBINASI
+for n_estimators, max_depth, learning_rate in product(
+    n_estimators_list,
+    max_depth_list,
+    learning_rate_list
+):
 
-    # LOG PARAM
-    mlflow.log_param("model", "XGBoost")
-    mlflow.log_param("n_estimators", n_estimators)
-    mlflow.log_param("max_depth", max_depth)
-    mlflow.log_param("learning_rate", learning_rate)
+    with mlflow.start_run():
 
-    # MODEL
-    model = XGBRegressor(
-        n_estimators=n_estimators,
-        max_depth=max_depth,
-        learning_rate=learning_rate,
-        random_state=42,
-        objective="reg:squarederror"
-    )
+        # LOG PARAM
+        mlflow.log_param("model", "XGBoost")
+        mlflow.log_param("n_estimators", n_estimators)
+        mlflow.log_param("max_depth", max_depth)
+        mlflow.log_param("learning_rate", learning_rate)
 
-    model.fit(X_train, y_train)
+        # MODEL
+        model = XGBRegressor(
+            n_estimators=n_estimators,
+            max_depth=max_depth,
+            learning_rate=learning_rate,
+            random_state=42,
+            objective="reg:squarederror"
+        )
 
-    # PREDICT
-    y_pred = model.predict(X_test)
+        model.fit(X_train, y_train)
 
-    # METRIC
-    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+        # PREDICT
+        y_pred = model.predict(X_test)
 
-    # LOG METRIC
-    mlflow.log_metric("rmse", rmse)
+        # METRIC
+        rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 
-    # LOG MODEL
-    mlflow.xgboost.log_model(model, "model")
+        # LOG METRIC
+        mlflow.log_metric("rmse", rmse)
 
-    print(f"RMSE: {rmse}")
+        # LOG MODEL
+        mlflow.xgboost.log_model(model, "model")
+
+        print(f"Params: n={n_estimators}, depth={max_depth}, lr={learning_rate}")
+        print(f"RMSE: {rmse}\n")
