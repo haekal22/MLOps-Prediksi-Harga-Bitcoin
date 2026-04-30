@@ -1,14 +1,17 @@
 import requests
 import pandas as pd
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 import os
+
+# pastikan folder ada
+os.makedirs("data/raw", exist_ok=True)
 
 url = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart"
 
 params = {
     "vs_currency": "usd",
-    "days": "30",
-    "interval": "daily"
+    "days": "90",
+    "interval": "hourly"
 }
 
 try:
@@ -28,16 +31,23 @@ try:
 
         timestamp = timestamp_ms / 1000
         date_utc = datetime.fromtimestamp(timestamp, tz=timezone.utc)
-        date_wib = date_utc + timedelta(hours=7)
 
         rows.append({
-            "datetime_wib": date_wib.strftime("%Y-%m-%d %H:%M:%S"),
+            "datetime_utc": date_utc,
             "price_usd": price,
             "market_cap_usd": market_cap,
             "volume_usd": volume
         })
 
     df = pd.DataFrame(rows)
+
+    # 🔥 penting untuk time series
+    df = df.sort_values("datetime_utc")
+    df = df.drop_duplicates(subset=["datetime_utc"])
+    df = df.reset_index(drop=True)
+
+    # convert ke string biar konsisten
+    df["datetime_utc"] = df["datetime_utc"].dt.strftime("%Y-%m-%d %H:%M:%S")
 
     filename = datetime.now().strftime(
         "data/raw/btc_market_%Y%m%d_%H%M%S.csv"
@@ -47,7 +57,8 @@ try:
 
     print("Data berhasil diambil dari API")
     print(df.head())
-    print(f"\nFile disimpan di: {filename}")
+    print(f"\nJumlah data: {len(df)}")
+    print(f"File disimpan di: {filename}")
 
 except requests.exceptions.RequestException as e:
     print(f"Gagal mengambil data dari API: {e}")
