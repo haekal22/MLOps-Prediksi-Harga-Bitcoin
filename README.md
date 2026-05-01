@@ -201,3 +201,36 @@ Data baru masuk
 dvc add lagi → commit (v2)  
 ↓  
 dvc diff untuk melihat perubahan
+
+##  Model Deployment Information
+
+###  Active Model for Inference
+
+Saat ini, model yang digunakan untuk proses inferensi adalah:
+
+* **Model Name**: `btc-price-model`
+* **Version**: `v1`
+* **Stage**: `Production`
+* **Algorithm**: XGBoost Regressor
+
+---
+
+###  Performance
+
+Model ini dipilih karena memiliki performa terbaik berdasarkan hasil eksperimen:
+
+* **RMSE**: `528` atau sekitar `0.7%` 
+
+Nilai RMSE ini merupakan yang paling rendah dibandingkan dengan variasi parameter lainnya yang diuji menggunakan MLflow.
+
+---
+
+###  Reason for Selection
+
+Model versi ini dijadikan **Production** karena:
+
+* Memiliki error prediksi paling kecil (RMSE terendah)
+* Stabil saat diuji pada data testing
+* Tidak mengalami overfitting dibandingkan model dengan kompleksitas lebih tinggi
+
+---

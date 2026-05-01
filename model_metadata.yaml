@@ -1,0 +1,5 @@
+model_name: btc-price-model
+version: 1
+stage: Production
+rmse: 528
+data_version: eb26d052221d47dffb130b9e10be7dd2
