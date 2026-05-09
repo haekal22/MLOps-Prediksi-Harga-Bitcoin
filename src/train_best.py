@@ -18,9 +18,9 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # 🔥 BEST PARAMETER (hasil grid search)
-n_estimators = 150
-max_depth = 3
-learning_rate = 0.05
+n_estimators = 1000
+max_depth = 1
+learning_rate = 0.04
 
 mlflow.set_experiment("BTC Prediction")
 
