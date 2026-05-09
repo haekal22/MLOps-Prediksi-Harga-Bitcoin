@@ -1,4 +1,11 @@
 [core]
-    remote = local_storage
+    remote = origin
 ['remote "local_storage"']
     url = ../dvc_storage
+['remote "github_remote"']
+    url = ../dvc_remote
+['remote "origin"']
+    url = https://dagshub.com/haekal22/MLOps-Prediksi-Harga-Bitcoin.dvc
+    auth = basic
+    user = haekal22
+    password = caf3e7028db99c0f19d7452f00bb5d3cda272abb
