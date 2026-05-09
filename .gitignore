@@ -206,6 +206,6 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 mlruns/
-data/raw/
-data/processed/*.csv
+# data/raw/
+# data/processed/*.csv
 dvc_storage/
