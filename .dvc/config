@@ -1,4 +1,6 @@
 [core]
-    remote = local_storage
+    remote = github_remote
 ['remote "local_storage"']
     url = ../dvc_storage
+['remote "github_remote"']
+    url = ../dvc_remote
