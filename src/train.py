@@ -29,9 +29,9 @@ X_train, X_test, y_train, y_test = train_test_split(
 # ========================
 # PARAMETER GRID
 # ========================
-n_estimators_list = [100, 300, 500]
-max_depth_list = [3, 5, 7]
-learning_rate_list = [0.01, 0.05, 0.1]
+n_estimators_list = [800, 900, 1000]
+max_depth_list = [1]
+learning_rate_list = [0.035, 0.04, 0.045]
 
 # ========================
 # MLFLOW
