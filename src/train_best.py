@@ -3,10 +3,11 @@ import mlflow
 import mlflow.xgboost
 import numpy as np
 
+
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from xgboost import XGBRegressor
-
+from mlflow.tracking import MlflowClient
 # LOAD DATA
 df = pd.read_csv("data/processed/btc_features.csv")
 
@@ -23,6 +24,9 @@ max_depth = 1
 learning_rate = 0.04
 
 mlflow.set_experiment("BTC Prediction")
+MODEL_NAME = "btc-price-model"
+THRESHOLD = 550 
+client = MlflowClient()
 
 with mlflow.start_run():
 
@@ -47,7 +51,31 @@ with mlflow.start_run():
 
     mlflow.log_metric("rmse", rmse)
 
-    # 🔥 penting: kasih nama jelas
-    mlflow.xgboost.log_model(model, "best_model")
+    # log model
+    mlflow.xgboost.log_model(model, "model")
 
     print(f"BEST RMSE: {rmse}")
+
+    # =========================
+    # TAHAP 5: MODEL REGISTRY
+    # =========================
+    if rmse < THRESHOLD:
+
+        run_id = mlflow.active_run().info.run_id
+        model_uri = f"runs:/{run_id}/model"
+
+        result = mlflow.register_model(
+            model_uri=model_uri,
+            name=MODEL_NAME
+        )
+
+        client.transition_model_version_stage(
+            name=MODEL_NAME,
+            version=result.version,
+            stage="Staging"
+        )
+
+        print("✅ MODEL MASUK STAGING")
+
+    else:
+        print("❌ Model tidak lolos threshold")
