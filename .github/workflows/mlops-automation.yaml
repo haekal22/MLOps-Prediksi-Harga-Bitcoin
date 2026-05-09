@@ -85,3 +85,28 @@ jobs:
     - name: Evaluate Model
       run: |
         python src/evaluate.py
+
+  registry:
+    needs: evaluate
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install Dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Pull DVC Data
+      run: |
+        dvc pull
+
+    - name: Run Registry Step
+      run: |
+        python src/train_best.py
