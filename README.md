@@ -234,3 +234,80 @@ Model versi ini dijadikan **Production** karena:
 * Tidak mengalami overfitting dibandingkan model dengan kompleksitas lebih tinggi
 
 ---
+
+## Menjalankan API dengan Docker
+
+### Build Docker Image
+
+Jalankan perintah berikut untuk build image:
+
+```bash
+docker build -t btc-api .
+```
+
+### Menjalankan Container
+
+```bash
+docker run -p 8000:8000 btc-api
+```
+
+Jika berhasil, API dapat diakses di browser:
+
+```txt
+http://localhost:8000
+```
+
+Untuk prediksi harga Bitcoin:
+
+```txt
+http://localhost:8000/predict
+```
+
+---
+
+## Orkestrasi Layanan dengan Docker Compose
+
+Pada proyek ini digunakan Docker Compose untuk menjalankan beberapa service secara bersamaan, yaitu:
+
+* **api-service** → service API prediksi Bitcoin menggunakan FastAPI
+* **mlflow-server** → service untuk tracking model menggunakan MLflow
+
+### Menjalankan Semua Service
+
+Jalankan perintah berikut:
+
+```bash
+docker compose up -d
+```
+
+Untuk mengecek container yang berjalan:
+
+```bash
+docker compose ps
+```
+
+### Mengakses Service
+
+**MLflow UI**
+
+```txt
+http://localhost:5000
+```
+
+**API BTC Prediction**
+
+```txt
+http://localhost:8000
+```
+
+**Endpoint Prediksi**
+
+```txt
+http://localhost:8000/predict
+```
+
+### Menghentikan Service
+
+```bash
+docker compose down
+```

@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  mlflow-server:
+    image: python:3.11-slim
+    container_name: mlflow-server
+
+    working_dir: /mlflow
+
+    command: >
+      bash -c "
+      pip install mlflow==2.12.2 &&
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri file:///mlflow/mlruns
+      --default-artifact-root file:///mlflow/mlruns
+      "
+
+    ports:
+      - "5000:5000"
+
+    volumes:
+      - ./mlruns:/mlflow/mlruns
+
+    networks:
+      - mlops-network
+
+  api-service:
+    build: .
+    container_name: btc-api
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - mlflow-server
+
+    volumes:
+      - ./mlruns:/app/mlruns
+
+    networks:
+      - mlops-network
+
+networks:
+  mlops-network:
+    driver: bridge
