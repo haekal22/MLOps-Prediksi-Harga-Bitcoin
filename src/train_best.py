@@ -18,7 +18,6 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, shuffle=False
 )
 
-# 🔥 BEST PARAMETER (hasil grid search)
 n_estimators = 1000
 max_depth = 1
 learning_rate = 0.04

@@ -33,38 +33,38 @@ df = df.reset_index(drop=True)
 # FEATURE ENGINEERING
 # ========================
 
-# --- CHANGE FEATURES ---
+
 df["price_change"] = df["price_usd"].pct_change()
 df["volume_change"] = df["volume_usd"].pct_change()
 df["marketcap_change"] = df["market_cap_usd"].pct_change()
 
-# --- MOVING AVERAGE ---
+
 df["ma_6"] = df["price_usd"].rolling(window=6).mean()
 df["ma_24"] = df["price_usd"].rolling(window=24).mean()
 
-# --- EXPONENTIAL MOVING AVERAGE ---
+
 df["ema_6"] = df["price_usd"].ewm(span=6).mean()
 df["ema_24"] = df["price_usd"].ewm(span=24).mean()
 
-# --- VOLATILITY ---
+
 df["volatility_6"] = df["price_usd"].rolling(window=6).std()
 df["volatility_24"] = df["price_usd"].rolling(window=24).std()
 
-# --- MOMENTUM ---
+
 df["momentum_3"] = df["price_usd"] - df["price_usd"].shift(3)
 df["momentum_6"] = df["price_usd"] - df["price_usd"].shift(6)
 df["momentum_24"] = df["price_usd"] - df["price_usd"].shift(24)
 
-# --- LAG FEATURES ---
+
 df["lag_1"] = df["price_usd"].shift(1)
 df["lag_2"] = df["price_usd"].shift(2)
 df["lag_24"] = df["price_usd"].shift(24)
 
-# --- PRICE VS MA ---
+
 df["price_ma6_diff"] = df["price_usd"] - df["ma_6"]
 df["price_ma24_diff"] = df["price_usd"] - df["ma_24"]
 
-# --- RSI (Relative Strength Index) ---
+
 delta = df["price_usd"].diff()
 
 gain = delta.clip(lower=0)

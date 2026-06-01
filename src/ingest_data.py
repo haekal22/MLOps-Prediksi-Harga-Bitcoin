@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime, timezone
 import os
 
-# pastikan folder ada
+
 os.makedirs("data/raw", exist_ok=True)
 
 url = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart"
@@ -41,12 +41,10 @@ try:
 
     df = pd.DataFrame(rows)
 
-    # 🔥 penting untuk time series
     df = df.sort_values("datetime_utc")
     df = df.drop_duplicates(subset=["datetime_utc"])
     df = df.reset_index(drop=True)
 
-    # convert ke string biar konsisten
     df["datetime_utc"] = df["datetime_utc"].dt.strftime("%Y-%m-%d %H:%M:%S")
 
     filename = datetime.now().strftime(
