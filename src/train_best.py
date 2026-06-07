@@ -20,11 +20,11 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 n_estimators = 1000
 max_depth = 1
-learning_rate = 0.04
+learning_rate = 0.05
 
 mlflow.set_experiment("BTC Prediction")
 MODEL_NAME = "btc-price-model"
-THRESHOLD = 550 
+THRESHOLD = 800 
 client = MlflowClient()
 
 with mlflow.start_run():
