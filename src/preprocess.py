@@ -33,63 +33,23 @@ df = df.reset_index(drop=True)
 # FEATURE ENGINEERING
 # ========================
 
-
+# Perubahan harga (%)
 df["price_change"] = df["price_usd"].pct_change()
-df["volume_change"] = df["volume_usd"].pct_change()
-df["marketcap_change"] = df["market_cap_usd"].pct_change()
 
-
-df["ma_6"] = df["price_usd"].rolling(window=6).mean()
+# Moving Average 24 jam
 df["ma_24"] = df["price_usd"].rolling(window=24).mean()
 
-
-df["ema_6"] = df["price_usd"].ewm(span=6).mean()
-df["ema_24"] = df["price_usd"].ewm(span=24).mean()
-
-
-df["volatility_6"] = df["price_usd"].rolling(window=6).std()
-df["volatility_24"] = df["price_usd"].rolling(window=24).std()
-
-
-df["momentum_3"] = df["price_usd"] - df["price_usd"].shift(3)
-df["momentum_6"] = df["price_usd"] - df["price_usd"].shift(6)
-df["momentum_24"] = df["price_usd"] - df["price_usd"].shift(24)
-
-
+# Harga historis (lag feature)
 df["lag_1"] = df["price_usd"].shift(1)
-df["lag_2"] = df["price_usd"].shift(2)
 df["lag_24"] = df["price_usd"].shift(24)
 
+# Time cyclical feature
+# Time cyclical feature
 
-df["price_ma6_diff"] = df["price_usd"] - df["ma_6"]
-df["price_ma24_diff"] = df["price_usd"] - df["ma_24"]
 
-
-delta = df["price_usd"].diff()
-
-gain = delta.clip(lower=0)
-loss = -delta.clip(upper=0)
-
-avg_gain = gain.rolling(14).mean()
-avg_loss = loss.rolling(14).mean()
-
-rs = avg_gain / avg_loss
-df["rsi"] = 100 - (100 / (1 + rs))
-
-# --- TIME FEATURES ---
-df["hour"] = df["datetime_utc"].dt.hour
-df["day"] = df["datetime_utc"].dt.day
-df["month"] = df["datetime_utc"].dt.month
-df["weekday"] = df["datetime_utc"].dt.weekday
-
-# --- CYCLICAL TIME (IMPORTANT) ---
-df["hour_sin"] = np.sin(2 * np.pi * df["hour"] / 24)
-df["hour_cos"] = np.cos(2 * np.pi * df["hour"] / 24)
-
-# --- RATIO FEATURE ---
-df["price_to_ma24"] = df["price_usd"] / df["ma_24"]
-
-# --- TARGET (NEXT STEP) ---
+# ========================
+# TARGET
+# ========================
 df["target"] = df["price_usd"].shift(-1)
 
 # ========================
