@@ -1,10 +1,7 @@
-version: "3.9"
-
 services:
   mlflow-server:
     image: python:3.11-slim
     container_name: mlflow-server
-
     working_dir: /mlflow
 
     command: >
@@ -27,17 +24,13 @@ services:
       - mlops-network
 
   api-service:
-    build: .
-    container_name: btc-api
+    image: btc-model:latest
 
-    ports:
-      - "8000:8000"
+    expose:
+      - "8080"
 
     depends_on:
       - mlflow-server
-
-    volumes:
-      - ./mlruns:/app/mlruns
 
     networks:
       - mlops-network
