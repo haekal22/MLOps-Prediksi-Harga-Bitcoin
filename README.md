@@ -311,3 +311,130 @@ http://localhost:8000/predict
 ```bash
 docker compose down
 ```
+
+## Serving Model MLflow dengan Docker
+
+Model yang telah terdaftar pada MLflow Registry dapat dijalankan sebagai REST API menggunakan Docker image hasil build MLflow.
+
+### Build Docker Image dari Model Registry
+
+Jalankan perintah berikut untuk membangun image model:
+
+```bash
+mlflow models build-docker \
+-m "models:/btc-price-model/Production" \
+-n btc-model \
+--env-manager local \
+--install-mlflow
+```
+
+Setelah selesai, image `btc-model` akan tersedia di Docker.
+
+### Menjalankan Container Model
+
+```bash
+docker run -p 8002:8080 btc-model
+```
+
+Endpoint inference tersedia pada:
+
+```txt
+http://localhost:8002/invocations
+```
+
+### Contoh Request Prediksi
+
+Gunakan `curl` untuk melakukan inferensi:
+
+```bash
+curl -X POST http://localhost:8002/invocations \
+-H "Content-Type: application/json" \
+-d '{
+  "dataframe_records": [
+    {
+      "price_usd": 105000,
+      "market_cap_usd": 2000000000000,
+      "volume_usd": 50000000000,
+      "price_change": 0.01,
+      "ma_24": 104000,
+      "lag_1": 104500,
+      "lag_24": 103000
+    }
+  ]
+}'
+```
+
+Contoh response:
+
+```json
+{
+  "predictions": [82035.421875]
+}
+```
+
+---
+
+## Horizontal Scaling dengan Docker Compose
+
+Untuk mensimulasikan beban tinggi, layanan API model dijalankan menggunakan beberapa replika container secara bersamaan.
+
+### Menjalankan Service
+
+Jalankan service menggunakan Docker Compose:
+
+```bash
+docker compose up -d
+```
+
+### Menambah Jumlah Replika Secara Dinamis
+
+Untuk menjalankan 3 instance API model:
+
+```bash
+docker compose up --scale api-service=3
+```
+
+Cek container yang aktif:
+
+```bash
+docker ps
+```
+
+Akan terlihat beberapa instance:
+
+```txt
+api-service-1
+api-service-2
+api-service-3
+```
+
+### Testing Endpoint pada Replica Service
+
+Karena service berada di Docker network internal, endpoint dapat diuji menggunakan container curl:
+
+```bash
+docker run --rm \
+--network mlops-prediksi-harga-bitcoin_mlops-network \
+curlimages/curl \
+-X POST http://api-service:8080/invocations \
+-H "Content-Type: application/json" \
+-d '{
+  "dataframe_records": [
+    {
+      "price_usd": 105000,
+      "market_cap_usd": 2000000000000,
+      "volume_usd": 50000000000,
+      "price_change": 0.01,
+      "ma_24": 104000,
+      "lag_1": 104500,
+      "lag_24": 103000
+    }
+  ]
+}'
+```
+
+### Menghentikan Semua Service
+
+```bash
+docker compose down
+```
