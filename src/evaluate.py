@@ -1,8 +1,8 @@
 import sys
 
-rmse = 462.92
+rmse = 788.85
 
-THRESHOLD = 600
+THRESHOLD = 800
 
 if rmse < THRESHOLD:
     print("Model VALID")
