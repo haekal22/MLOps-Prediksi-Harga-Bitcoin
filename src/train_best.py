@@ -3,12 +3,14 @@ import mlflow
 import mlflow.xgboost
 import numpy as np
 
-
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from xgboost import XGBRegressor
 from mlflow.tracking import MlflowClient
-# LOAD DATA
+
+# ==========================================
+# 1. LOAD DATA
+# ==========================================
 df = pd.read_csv("data/processed/btc_features.csv")
 
 X = df.drop(columns=["target", "datetime_utc"])
@@ -18,6 +20,9 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, shuffle=False
 )
 
+# ==========================================
+# 2. HYPERPARAMETERS
+# ==========================================
 n_estimators = 1000
 max_depth = 1
 learning_rate = 0.05
@@ -27,7 +32,10 @@ MODEL_NAME = "btc-price-model"
 THRESHOLD = 800 
 client = MlflowClient()
 
-with mlflow.start_run():
+# ==========================================
+# 3. TRAINING & MLFLOW LOGGING
+# ==========================================
+with mlflow.start_run() as run:
 
     mlflow.log_param("model", "XGBoost-Best")
     mlflow.log_param("n_estimators", n_estimators)
@@ -45,22 +53,12 @@ with mlflow.start_run():
     model.fit(X_train, y_train)
 
     y_pred = model.predict(X_test)
-
     rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 
+    # Log metrik ke MLflow Server
     mlflow.log_metric("rmse", rmse)
 
-    # log model (KODE BARU: AMAN DARI PERMISSION DENIED)
-    import os
-    
-    # Buat folder sementara lokal khusus di dalam VM GitHub Actions
-    local_artifact_path = os.path.join(os.getcwd(), "temp_model_artifacts")
-    
-    # Log model dengan mengabaikan default path bawaan server
-    mlflow.xgboost.log_model(
-        xgb_model=model, 
-        artifact_path="model",
-        registered_model_name=None # Jangan langsung di-register di sini karena sudah dipisah ke register.py
-    )
+    # Log model pake fungsi asli bawaan kamu (Aman karena di-bypass dari YAML)
+    mlflow.xgboost.log_model(model, "model")
 
-    print(f"RMSE: {rmse}")
+    print(f"BEST RMSE: {rmse}")
