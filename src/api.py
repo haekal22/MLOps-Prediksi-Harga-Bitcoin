@@ -1,15 +1,27 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from prometheus_fastapi_instrumentator import Instrumentator
 import mlflow.pyfunc
-import pandas as pd
-
+import pandas as pd 
+import mlflow.pyfunc
+from pathlib import Path
 app = FastAPI()
 
+Instrumentator().instrument(app).expose(app)
 # ========================
 # LOAD MODEL
 # ========================
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+model_path = (
+    BASE_DIR /
+    "mlruns/1/7322ba02129e43ba8944de595794176e/artifacts/model"
+)
+
 model = mlflow.pyfunc.load_model(
-    "/app/mlruns/1/7322ba02129e43ba8944de595794176e/artifacts/model"
+    str(model_path)
 )
 
 

@@ -23,17 +23,55 @@ services:
     networks:
       - mlops-network
 
-  api-service:
-    image: btc-model:latest
 
+  api-service:
+    build: .
     expose:
-      - "8080"
+      - "8000"
 
     depends_on:
       - mlflow-server
 
+    deploy:
+      replicas: 3
+
     networks:
       - mlops-network
+
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+
+    ports:
+      - "9090:9090"
+
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+
+    depends_on:
+      - api-service
+
+    networks:
+      - mlops-network
+
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - prometheus
+
+    networks:
+      - mlops-network
+
 
 networks:
   mlops-network:
