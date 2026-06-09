@@ -1,0 +1,20 @@
+groups:
+  - name: btc_ct_triggers
+    rules:
+      # Skenario A: Latency > 200ms (0.2 detik)
+      - alert: ModelLatencyTooHigh
+        expr: http_request_duration_seconds_sum{handler="/predict"} / http_request_duration_seconds_count{handler="/predict"} > 0.2
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Model Latency High - Triggering Continuous Training Pipeline"
+
+      # Skenario B: HTTP 422 > 15 error dalam 1 menit
+      - alert: DataDriftValidationFailure
+        expr: delta(http_requests_total{handler="/predict", status="422"}[1m]) > 15
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Potential Data Drift Detected - Triggering Continuous Training Pipeline"
