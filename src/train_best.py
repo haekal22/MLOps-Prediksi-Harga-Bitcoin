@@ -54,27 +54,3 @@ with mlflow.start_run():
     mlflow.xgboost.log_model(model, "model")
 
     print(f"BEST RMSE: {rmse}")
-
-    # =========================
-    # TAHAP 5: MODEL REGISTRY
-    # =========================
-    if rmse < THRESHOLD:
-
-        run_id = mlflow.active_run().info.run_id
-        model_uri = f"runs:/{run_id}/model"
-
-        result = mlflow.register_model(
-            model_uri=model_uri,
-            name=MODEL_NAME
-        )
-
-        client.transition_model_version_stage(
-            name=MODEL_NAME,
-            version=result.version,
-            stage="Staging"
-        )
-
-        print("✅ MODEL MASUK STAGING")
-
-    else:
-        print("❌ Model tidak lolos threshold")
