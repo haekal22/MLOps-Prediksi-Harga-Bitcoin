@@ -12,8 +12,8 @@ groups:
 
       # Skenario B: HTTP 422 > 15 error dalam 1 menit
       - alert: DataDriftValidationFailure
-        expr: delta(http_requests_total{handler="/predict", status="422"}[1m]) > 15
-        for: 1m
+        expr: http_requests_total{handler="/predict",status="4xx"} > 0
+        for: 0m
         labels:
           severity: critical
         annotations:

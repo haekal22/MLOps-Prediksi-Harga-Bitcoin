@@ -29,6 +29,9 @@ services:
       replicas: 3
     networks:
       - mlops-network
+    volumes:
+      - .:/app
+      - ./mlruns:/workspaces/MLOps-Prediksi-Harga-Bitcoin/mlruns
 
   prometheus:
     image: prom/prometheus:latest
