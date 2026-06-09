@@ -50,7 +50,17 @@ with mlflow.start_run():
 
     mlflow.log_metric("rmse", rmse)
 
-    # log model
-    mlflow.xgboost.log_model(model, "model")
+    # log model (KODE BARU: AMAN DARI PERMISSION DENIED)
+    import os
+    
+    # Buat folder sementara lokal khusus di dalam VM GitHub Actions
+    local_artifact_path = os.path.join(os.getcwd(), "temp_model_artifacts")
+    
+    # Log model dengan mengabaikan default path bawaan server
+    mlflow.xgboost.log_model(
+        xgb_model=model, 
+        artifact_path="model",
+        registered_model_name=None # Jangan langsung di-register di sini karena sudah dipisah ke register.py
+    )
 
-    print(f"BEST RMSE: {rmse}")
+    print(f"RMSE: {rmse}")
