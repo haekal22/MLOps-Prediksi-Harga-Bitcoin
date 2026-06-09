@@ -210,3 +210,4 @@ mlruns/
 # data/processed/*.csv
 dvc_storage/
 .env
+alertmanager.yml

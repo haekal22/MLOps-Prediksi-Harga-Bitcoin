@@ -2,7 +2,7 @@ name: Continuous Training (CT) Closed-Loop Pipeline
 
 on:
   repository_dispatch:
-    types: [ModelLatencyTooHigh, DataDriftValidationFailure]
+    types: [webhook_alert, ModelLatencyTooHigh, DataDriftValidationFailure]
   workflow_dispatch: 
 
 jobs:

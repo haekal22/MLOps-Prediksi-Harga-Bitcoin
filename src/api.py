@@ -15,7 +15,7 @@ Instrumentator().instrument(app).expose(app)
 mlflow.set_tracking_uri("http://mlflow-server:5000")
 
 model = mlflow.pyfunc.load_model(
-    "models:/BTC_Predictor/Production"
+    "models:/btc-price-model/Production"
 )
 
 # ========================
