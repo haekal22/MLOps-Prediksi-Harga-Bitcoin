@@ -23,11 +23,12 @@ jobs:
 
     - name: Install Dependencies
       run: |
+        pip install --upgrade pip
+        pip install setuptools==69.5.1 wheel
         pip install -r requirements.txt
 
     - name: Pull DVC Data
       run: |
-        # Pastikan kredensial DVC remote sudah di-set di GitHub Secrets jika dibutuhkan
         dvc pull
 
     - name: Generate Dataset
@@ -52,10 +53,10 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        pip install -r requirements.txt
         pip install --upgrade pip
         pip install setuptools==69.5.1 wheel
         pip install dvc
+        pip install -r requirements.txt
 
     - name: Pull DVC Data
       run: |
@@ -67,7 +68,7 @@ jobs:
 
     - name: Run Training
       env:
-        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }} # Masukkan URL MLflow kamu di GitHub Secrets
+        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
       run: |
         python src/train_best.py
 
@@ -85,6 +86,8 @@ jobs:
 
     - name: Install Dependencies
       run: |
+        pip install --upgrade pip
+        pip install setuptools==69.5.1 wheel
         pip install -r requirements.txt
 
     - name: Evaluate Model
@@ -93,7 +96,6 @@ jobs:
       run: |
         python src/evaluate.py
 
-    # Simpan hasil kelulusan run_id agar bisa dipakai di job berikutnya
     - name: Upload Run ID Artifact
       uses: actions/upload-artifact@v4
       with:
@@ -114,15 +116,15 @@ jobs:
 
     - name: Install Dependencies
       run: |
+        pip install --upgrade pip
+        pip install setuptools==69.5.1 wheel
         pip install -r requirements.txt
 
-    # Download file text run_id yang lolos validasi tadi
     - name: Download Run ID Artifact
       uses: actions/download-artifact@v4
       with:
         name: run-id-artifact
 
-    # Jalankan skrip registrasi murni (bukan malah training lagi!)
     - name: Run Registry Step
       env:
         MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
