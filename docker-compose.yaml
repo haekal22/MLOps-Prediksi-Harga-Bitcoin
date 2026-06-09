@@ -3,7 +3,6 @@ services:
     image: python:3.11-slim
     container_name: mlflow-server
     working_dir: /mlflow
-
     command: >
       bash -c "
       pip install mlflow==2.12.2 &&
@@ -13,25 +12,46 @@ services:
       --backend-store-uri file:///mlflow/mlruns
       --default-artifact-root file:///mlflow/mlruns
       "
-
     ports:
       - "5000:5000"
-
     volumes:
       - ./mlruns:/mlflow/mlruns
-
     networks:
       - mlops-network
 
   api-service:
-    image: btc-model:latest
-
-    expose:
-      - "8080"
-
+    build: .
+    
+    ports:
+      - "8000-8002:8000"
     depends_on:
       - mlflow-server
+    deploy:
+      replicas: 3
+    networks:
+      - mlops-network
 
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    depends_on:
+      - api-service
+    networks:
+      - mlops-network
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
     networks:
       - mlops-network
 
