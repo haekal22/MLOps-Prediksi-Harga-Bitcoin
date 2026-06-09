@@ -1,0 +1,18 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'github-webhook-trigger'
+
+receivers:
+- name: 'github-webhook-trigger'
+  webhook_configs:
+  - url: 'https://api.github.com/repos/haekal22/MLOps-Prediksi-Harga-Bitcoin/dispatches'
+    http_config:
+      bearer_token: '${GITHUB_TOKEN}' # <--- Ganti dengan token ghp_... dari Langkah 1
+      headers:
+        Accept: "application/vnd.github.v3+json"

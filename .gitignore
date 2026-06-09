@@ -209,3 +209,4 @@ mlruns/
 # data/raw/
 # data/processed/*.csv
 dvc_storage/
+.env
