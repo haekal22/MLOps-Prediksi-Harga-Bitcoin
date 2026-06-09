@@ -76,7 +76,6 @@ Fitur:
 - Harga (price)
 - Market Cap
 - Volume
-- Data dikonversi ke waktu WIB
 - Data disimpan dalam format CSV
 - Menggunakan timestamp pada nama file untuk menghindari overwrite
 - Mendukung pengambilan data secara berkala (simulasi continual learning)
@@ -105,7 +104,7 @@ Proses yang dilakukan:
 Output:
 Lokasi: data/processed/
 File hasil:
-btc_clean.csv
+btc_features.csv
 
 ---
 
