@@ -17,10 +17,12 @@ try:
     result = mlflow.register_model(model_uri=model_uri, name=MODEL_NAME)
 
     # Ubah status versi terbaru tersebut menjadi 'Staging'
+
     client.transition_model_version_stage(
         name=MODEL_NAME,
         version=result.version,
-        stage="Staging"
+        stage="Staging",
+        archive_existing_versions=True
     )
 
     print(f"🎉 SUCCESS: Model '{MODEL_NAME}' Versi {result.version} resmi berstatus STAGING!")
