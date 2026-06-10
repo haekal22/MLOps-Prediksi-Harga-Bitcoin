@@ -58,8 +58,11 @@ jobs:
         pip install dvc
         pip install -r requirements.txt
 
-    # 🛠️ TRIK UTAMA: Bikin fo l der tipuan biar MLflow gak Error Permission Denied!
-    
+    # 🛠️ TRIK UTAMA: Bikin folder tipuan biar MLflow gak Error Permission Denied!
+    - name: Create Workspaces Directory for MLflow
+      run: |
+        sudo mkdir -p /workspaces/MLOps-Prediksi-Harga-Bitcoin
+        sudo chmod -R 777 /workspaces
 
     - name: Pull DVC Data
       run: |
