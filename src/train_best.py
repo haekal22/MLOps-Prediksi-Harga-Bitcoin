@@ -7,9 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from xgboost import XGBRegressor
 
-# ==========================================
-# 1. LOAD DATA
-# ==========================================
+
 df = pd.read_csv("data/processed/btc_features.csv")
 
 X = df.drop(columns=["target", "datetime_utc"])
@@ -21,18 +19,14 @@ X_train, X_test, y_train, y_test = train_test_split(
     shuffle=False
 )
 
-# ==========================================
-# 2. HYPERPARAMETERS
-# ==========================================
+
 n_estimators = 1000
 max_depth = 1
 learning_rate = 0.05
 
 mlflow.set_experiment("BTC Prediction")
 
-# ==========================================
-# 3. TRAINING & LOGGING
-# ==========================================
+
 with mlflow.start_run():
 
     mlflow.log_param("model", "XGBoost-Best")
