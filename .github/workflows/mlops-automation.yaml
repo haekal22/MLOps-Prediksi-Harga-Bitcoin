@@ -58,7 +58,7 @@ jobs:
         pip install dvc
         pip install -r requirements.txt
 
-    # 🛠️ TRIK UTAMA: Bikin fol der tipuan biar MLflow gak Error Permission Denied!
+    # 🛠️ TRIK UTAMA: Bikin fo l der tipuan biar MLflow gak Error Permission Denied!
     
 
     - name: Pull DVC Data
