@@ -48,18 +48,6 @@ services:
     networks:
       - mlops-network
 
-  alertmanager:
-    image: prom/alertmanager:latest
-    container_name: alertmanager
-    ports:
-      - "9093:9093"
-    environment:
-      - GITHUB_TOKEN=${GITHUB_TOKEN}
-    volumes:
-      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml # <-- BARU: Hubungkan file alertmanager
-    networks:
-      - mlops-network
-
   grafana:
     image: grafana/grafana
     container_name: grafana
@@ -67,7 +55,6 @@ services:
       - "3000:3000"
     depends_on:
       - prometheus
-      - alertmanager # <-- UPDATE: Grafana nunggu alertmanager siap juga
     networks:
       - mlops-network
 

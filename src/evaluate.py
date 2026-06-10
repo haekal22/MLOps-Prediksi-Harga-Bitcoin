@@ -40,7 +40,7 @@ try:
             f.write(run_id)
         sys.exit(0)
     else:
-        print("❌ Model FAILED: Performa buruk, di bawah standar.")
+        print("❌ Model FAILED: Performa tidak memenuhi threshold.")
         sys.exit(1)
 
 except Exception as e:

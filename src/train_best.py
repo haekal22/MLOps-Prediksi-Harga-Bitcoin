@@ -6,7 +6,6 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 from xgboost import XGBRegressor
-from mlflow.tracking import MlflowClient
 
 # ==========================================
 # 1. LOAD DATA
@@ -17,7 +16,9 @@ X = df.drop(columns=["target", "datetime_utc"])
 y = df["target"]
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, shuffle=False
+    X, y,
+    test_size=0.2,
+    shuffle=False
 )
 
 # ==========================================
@@ -28,14 +29,11 @@ max_depth = 1
 learning_rate = 0.05
 
 mlflow.set_experiment("BTC Prediction")
-MODEL_NAME = "btc-price-model"
-THRESHOLD = 800 
-client = MlflowClient()
 
 # ==========================================
-# 3. TRAINING & MLFLOW LOGGING
+# 3. TRAINING & LOGGING
 # ==========================================
-with mlflow.start_run() as run:
+with mlflow.start_run():
 
     mlflow.log_param("model", "XGBoost-Best")
     mlflow.log_param("n_estimators", n_estimators)
@@ -53,12 +51,16 @@ with mlflow.start_run() as run:
     model.fit(X_train, y_train)
 
     y_pred = model.predict(X_test)
-    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 
-    # Log metrik ke MLflow Server
+    rmse = np.sqrt(
+        mean_squared_error(y_test, y_pred)
+    )
+
     mlflow.log_metric("rmse", rmse)
 
-    # Log model pake fungsi asli bawaan kamu (Aman karena di-bypass dari YAML)
-    mlflow.xgboost.log_model(model, "model")
+    mlflow.xgboost.log_model(
+        model,
+        artifact_path="model"
+    )
 
     print(f"BEST RMSE: {rmse}")
